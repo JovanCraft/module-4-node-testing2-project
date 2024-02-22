@@ -1,22 +1,29 @@
-const common = {
+module.exports = {
+
+  development: {
     client: 'sqlite3',
     useNullAsDefault: true,
-    migrations: { directory: './data/migrations' },
-    seeds: { directory: './data/seeds' },
-  }
-
-
-module.exports = {
-  development: {
-    ...common,
     connection: {
-      filename: './data/store.db3',
+      filename: './data/store.db3'
     },
+    migrations: {
+      directory: './data/migrations'
+    },
+    seeds: {
+      directory: './data/seeds'
+    }
   },
   testing: {
-    ...common,
+    client: 'sqlite3',
+    useNullAsDefault: true,
     connection: {
-      filename: './data/test.db3',
+      filename: './data/test.db3'
     },
+    migrations: {
+      directory: './data/migrations'
+    },
+    seeds: {
+      directory: './data/seeds'
+    }
   }
-}
+};
