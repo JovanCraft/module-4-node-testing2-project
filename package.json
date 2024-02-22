@@ -6,7 +6,7 @@
     "test": "cross-env NODE_ENV=testing jest --verbose --watchAll --runInBand --detectOpenHandles",
     "start": "node index.js",
     "server": "nodemon index.js",
-    "migrate": "knex migrate: latest",
+    "migrate": "knex migrate:latest",
     "seed": "knex seed:run",
     "rollback": "knex migrate rollback",
     "migrate_test": "knex migrate:latest --env=testing",
