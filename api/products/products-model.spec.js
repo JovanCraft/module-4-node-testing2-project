@@ -32,4 +32,56 @@ describe('Store Products', () => {
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(2);
     })
+    test('getProductById gives us a specific product depending on the id', async () => {
+       await request(server).post('/products').send(testProduct1);
+       expect(await db('products')).toHaveLength(1)
+    })
+    test('addProduct should add a new product', async () => {
+        const response = await request(server).post('/products').send(testProduct1);
+
+        expect(response.status).toBe(201);
+    })
+    test('updateProduct should update and existing product', async () => {
+        const addedProduct = await request(server).post('/products').send(testProduct1);
+
+        const updatedProduct = { ...testProduct1, name: 'Updated Name' };
+        const response = await request(server).put(`/products/${addedProduct.body.id}`).send(updatedProduct);
+
+        expect(response.status).toBe(200);
+    })
+    test('deleteProduct gets rid of an already existing product', async () => {
+        const addedProduct = await request(server).post('/products').send(testProduct1);
+
+        const response = await request(server).delete(`/products/${addedProduct.body.id}`);
+
+        expect(response.status).toBe(200);
+    })
+    test('getProductsByType should return a list of projects with a certain type', async () => {
+        await request(server).post('/products').send(testProduct1);
+        await request(server).post('/products').send(testProduct2);
+
+        const response = await request(server).get('/products/type/Stationary');
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(2);
+    })
+    test('getProductByColor should return a list of products with the same specific color', async () => {
+        await request(server).post('/products').send(testProduct1);
+        await request(server).post('/products').send(testProduct2);
+
+        const response = await request(server).get('/products/color/black');
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(1);
+    })
+    test('getProductsByBrand should return a list of products by the specific given brand', () => {
+
+    })
+
+    test('getProductsByQuantityGreaterThan', () => {
+
+    })
+    test('getProductsByPriceLessThan', () => {
+
+    })
 })

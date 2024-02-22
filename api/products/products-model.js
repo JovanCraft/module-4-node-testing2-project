@@ -7,7 +7,7 @@ async function getAllProducts() {
 }
 
 async function getProductById(id){
-    const rows = await db('products').where('products.product_id','=', id)
+    const rows = await db('products').where('product_id','=', id).first()
 
     return rows
 }
