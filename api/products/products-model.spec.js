@@ -74,14 +74,33 @@ describe('Store Products', () => {
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
     })
-    test('getProductsByBrand should return a list of products by the specific given brand', () => {
+    test('getProductsByBrand should return a list of products by the specific given brand', async () => {
+        const brandToFilterBy = 'Sharpie';
+        const response = await request(server).get(`/products/brand/${brandToFilterBy}`);
 
+        expect(response.status).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+        response.body.forEach(product => {
+            expect(product.brand).toBe(brandToFilterBy);
+          });
     })
 
-    test('getProductsByQuantityGreaterThan', () => {
+    test('getProductsByQuantityGreaterThan should return products with quantity greater than specified value', async () => {
+        await request(server).post('/products').send(testProduct1);
+        await request(server).post('/products').send(testProduct2);
 
+        const response = await request(server).get('/products/quantity-greater-than/10');
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(1);
     })
-    test('getProductsByPriceLessThan', () => {
+    test('getProductsByPriceLessThan should return products with price less than specified value', async () => {
+        await request(server).post('/products').send(testProduct1);
+        await request(server).post('/products').send(testProduct2);
 
+        const response = await request(server).get('/products/price-less-than/3');
+
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(1);
     })
 })
