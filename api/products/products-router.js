@@ -13,18 +13,18 @@ router.get('/:id', async (req, res) => {
   });
 
 router.post('/', async (req, res) => {
-    await Products.addProduct(req.body);
-    res.sendStatus(201);
+    const newProject = await Products.addProduct(req.body);
+    res.status(201).json(newProject)
   });
 
   router.put('/:id', async (req, res) => {
-    await Products.updateProduct(req.params.id, req.body);
-    res.sendStatus(200);
+    const updatedProduct = await Products.updateProduct(req.params.id, req.body);
+    res.status(200).json(updatedProduct);
   });
 
 router.delete('/:id', async (req, res) => {
     await Products.deleteProduct(req.params.id);
-    res.sendStatus(200);
+    res.status(200).json({ message: 'successfully deleted!'});
   });
 
 router.get('/type/:type', async (req, res) => {

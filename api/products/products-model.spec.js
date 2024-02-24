@@ -25,37 +25,46 @@ test('checks for the correct env variable', () => {
 describe('Store Products', () => {
     test('getAllProducts give us all the products currently in our store', async () => {
         await request(server).post('/products').send(testProduct1);
-        await request(server).post('/products').send(testProduct2);
 
         const response = await request(server).get('/products');
 
+
         expect(response.status).toBe(200);
-        expect(response.body.length).toBe(2);
-    })
+        expect(typeof response.body).toBe('object')
+        expect(response.body[0]['name']).toBe('Markers')
+    }, 10000)
     test('getProductById gives us a specific product depending on the id', async () => {
        await request(server).post('/products').send(testProduct1);
-       expect(await db('products')).toHaveLength(1)
-    })
+       await request(server).post('/products').send(testProduct2);
+       const response = await request(server).get('/products')
+
+       expect(await db('products')).toHaveLength(2)
+       expect(response.body[1].product_id).toBe(2)
+    }, 10000)
     test('addProduct should add a new product', async () => {
         const response = await request(server).post('/products').send(testProduct1);
-
+        console.log(response.body)
         expect(response.status).toBe(201);
-    })
+        expect(response.body.name).toBe('Markers')
+    }, 10000)
     test('updateProduct should update and existing product', async () => {
         const addedProduct = await request(server).post('/products').send(testProduct1);
-
+        //console.log('addedProduct',addedProduct.body)
         const updatedProduct = { ...testProduct1, name: 'Updated Name' };
-        const response = await request(server).put(`/products/${addedProduct.body.id}`).send(updatedProduct);
-
-        expect(response.status).toBe(200);
-    })
+        const update = await request(server).put(`/products/${addedProduct.body.product_id}`).send(updatedProduct);
+        //console.log('update',update.body)
+        expect(update.status).toBe(200);
+        const response = await request(server).get('/products')
+        expect(response.body[0].name).toBe('Updated Name')
+    }, 10000)
     test('deleteProduct gets rid of an already existing product', async () => {
         const addedProduct = await request(server).post('/products').send(testProduct1);
 
         const response = await request(server).delete(`/products/${addedProduct.body.id}`);
 
         expect(response.status).toBe(200);
-    })
+        expect(response.body.message).toBe('successfully deleted!')
+    }, 10000)
     test('getProductsByType should return a list of projects with a certain type', async () => {
         await request(server).post('/products').send(testProduct1);
         await request(server).post('/products').send(testProduct2);
@@ -64,7 +73,7 @@ describe('Store Products', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(2);
-    })
+    }, 10000)
     test('getProductByColor should return a list of products with the same specific color', async () => {
         await request(server).post('/products').send(testProduct1);
         await request(server).post('/products').send(testProduct2);
@@ -73,7 +82,7 @@ describe('Store Products', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
-    })
+    }, 10000)
     test('getProductsByBrand should return a list of products by the specific given brand', async () => {
         const brandToFilterBy = 'Sharpie';
         const response = await request(server).get(`/products/brand/${brandToFilterBy}`);
@@ -83,7 +92,7 @@ describe('Store Products', () => {
         response.body.forEach(product => {
             expect(product.brand).toBe(brandToFilterBy);
           });
-    })
+    }, 10000)
 
     test('getProductsByQuantityGreaterThan should return products with quantity greater than specified value', async () => {
         await request(server).post('/products').send(testProduct1);
@@ -93,7 +102,7 @@ describe('Store Products', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
-    })
+    }, 10000)
     test('getProductsByPriceLessThan should return products with price less than specified value', async () => {
         await request(server).post('/products').send(testProduct1);
         await request(server).post('/products').send(testProduct2);
@@ -102,5 +111,5 @@ describe('Store Products', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.length).toBe(1);
-    })
+    }, 10000)
 })

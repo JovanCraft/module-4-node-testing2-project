@@ -13,9 +13,9 @@ async function getProductById(id){
 }
 
 async function addProduct(product){
-    const rows = await db('products').insert(product)
-
-    return rows
+        const [insertedProductId] = await db('products').insert(product);
+        const insertedProduct = await db('products').where('product_id', insertedProductId).first();
+        return insertedProduct;
 }
 
 async function updateProduct(id, changes){
